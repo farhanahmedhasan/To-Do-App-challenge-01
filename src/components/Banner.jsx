@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 
 import useLocation from "../hooks/useLocation";
+import useWeatherData from "../hooks/useWeatherData";
+
+import {
+  convertTimeStampToHours,
+  getDateOrHour,
+  convertKelvinToCelsius,
+} from "../utility/utilityFunctions";
 
 import { ShowImage } from "./ShowImage";
 
 export function Banner() {
-  const loaction = useLocation();
+  const location = useLocation();
+  const { weatherData, error, loading } = useWeatherData(location.lat, location.long);
 
   const [dayOrNight, setIsDayOrNight] = useState({
     day: false,
@@ -13,36 +21,21 @@ export function Banner() {
     loading: true,
   });
 
-  const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-  });
-
-  const getWeatherData = async () => {
-    console.log(loaction);
-    // const { latitude, longitude } = getLatLang();
-    // console.log(latitude, longitude);
-    // const response = await fetch(
-    //   `https://api.openweathermap.org/data/3.0/onecall?lat=${latitude}&lon=${longitude}&exclude=alerts,hourly,minutely&appid=f540a24d649a7effe0ea55fb2212fa3d
-    //   `
-    // );
-    // const data = await response.json();
-    // console.log(data);
-  };
+  const today = getDateOrHour({ weekday: "long" }).split(" ")[0];
+  const currentTime = getDateOrHour({ hour: "numeric", hour12: false });
 
   useEffect(() => {
-    const currentTime = new Date().toLocaleTimeString("en-US", {
-      hour: "numeric",
-      hour12: false,
-    });
+    if (weatherData) {
+      const sunrise = convertTimeStampToHours(weatherData.sys.sunrise);
+      const sunset = convertTimeStampToHours(weatherData.sys.sunset);
 
-    setIsDayOrNight(
-      currentTime > 6 && currentTime < 18
-        ? { ...dayOrNight, day: true, loading: false }
-        : { ...dayOrNight, night: true, loading: false }
-    );
-
-    getWeatherData();
-  }, [dayOrNight.day, dayOrNight.night, dayOrNight.loading]);
+      setIsDayOrNight(
+        currentTime > sunrise && currentTime < sunset
+          ? { ...dayOrNight, day: true, loading: false }
+          : { ...dayOrNight, night: true, loading: false }
+      );
+    }
+  }, [weatherData]);
 
   return (
     <header className="relative">
@@ -53,7 +46,14 @@ export function Banner() {
       <div className="absolute top-0 w-full p-4 flex justify-between text-2xl font-medium">
         <h4 className="">{today}</h4>
 
-        <h4 className="">Dhaka 24C</h4>
+        {error && <p className="text-red-500">{error}</p>}
+        {loading && <p className="text-blue-500">Loading...</p>}
+        {!loading && !error && (
+          <h4 className="">
+            {weatherData?.name.split(" ")[0]}{" "}
+            {convertKelvinToCelsius(weatherData?.main.temp).toFixed(1)} °C
+          </h4>
+        )}
       </div>
     </header>
   );

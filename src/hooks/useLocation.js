@@ -1,27 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function useLocation() {
-  const [location, setLocation] = useState({ lat: 0, long: 0 });
+  const [lat, setLat] = useState(0);
+  const [long, setLong] = useState(0);
 
-  const options = {
-    enableHighAccuracy: true,
-    timeout: 10000,
-    maximumAge: 0,
-  };
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setLat(pos.coords.latitude);
+          setLong(pos.coords.longitude);
+        },
+        (err) => console.log(err),
+        { enableHighAccuracy: true }
+      );
+    }
+  }, []);
 
-  if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition((position) =>
-      setLocation({
-        lat: position.coords.latitude,
-        long: position.coords.longitude,
-      })
-    ),
-      (error) => {
-        console.log(error);
-      };
-  }
-
-  return location;
+  return { lat, long };
 }
 
 export default useLocation;
