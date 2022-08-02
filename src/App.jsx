@@ -1,14 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import { Home } from "./pages/Home";
-import { Work } from "./pages/Work";
-import { Other } from "./pages/Other";
+import { Home, Work, Others, AllTasks, Overdue } from "./pages";
 
-import { taskData } from "./data/data";
-
-import { Banner } from "./components/Banner";
-import { Wrapper } from "./components/Wrapper";
-import { NavBar } from "./components/NavBar";
+import { AppWrapper, PagesWrapper } from "./components/wrappers";
+import { Banner, NavBar } from "./components";
 
 const App = () => {
   // const [tasks, setTasks] = useState(taskData);
@@ -20,16 +15,20 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Wrapper>
+      <AppWrapper>
         <Banner />
         <NavBar />
 
-        <Routes>
-          <Route exact path="/" element={<Home type="home" />} />
-          <Route path="/work" element={<Work type="work" />} />
-          <Route path="/other" element={<Other type="other" />} />
-        </Routes>
-      </Wrapper>
+        <PagesWrapper>
+          <Routes>
+            <Route exact path="/" element={<Home type="home" />} />
+            <Route path="/work" element={<Work type="work" />} />
+            <Route path="/others" element={<Others type="others" />} />
+            <Route path="/alltasks" element={<AllTasks type="alltasks" />} />
+            <Route path="/overdue" element={<Overdue type="overdue" />} />
+          </Routes>
+        </PagesWrapper>
+      </AppWrapper>
     </BrowserRouter>
   );
 };

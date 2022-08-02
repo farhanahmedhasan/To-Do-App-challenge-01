@@ -9,9 +9,9 @@ import {
   convertKelvinToCelsius,
 } from "../utility/utilityFunctions";
 
-import { ShowImage } from "./ShowImage";
+import { ShowImage } from "../components";
 
-export function Banner() {
+function Banner() {
   const location = useLocation();
   const { weatherData, error, loading } = useWeatherData(location.lat, location.long);
 
@@ -51,10 +51,12 @@ export function Banner() {
         {!loading && !error && (
           <h4 className="">
             {weatherData?.name.split(" ")[0]}{" "}
-            {convertKelvinToCelsius(weatherData?.main.temp).toFixed(1)} °C
+            {convertKelvinToCelsius(weatherData?.main.temp).toFixed(0)} °C
           </h4>
         )}
       </div>
     </header>
   );
 }
+
+export default Banner;

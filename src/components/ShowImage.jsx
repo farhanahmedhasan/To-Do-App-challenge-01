@@ -4,7 +4,7 @@ import BlurImage from "../assets/blur.jpg";
 import NightImage from "../assets/night-img.png";
 import DayImage from "../assets/day-img.png";
 
-export function ShowImage({ dayOrNight }) {
+function ShowImage({ dayOrNight }) {
   if (dayOrNight.loading) {
     return <img className="h-[460px] w-full" src={BlurImage} />;
   }

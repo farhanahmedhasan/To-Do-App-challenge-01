@@ -1,5 +1,7 @@
 import React from "react";
 
-export function Home({ type }) {
-  return <div>Home</div>;
+function Home({ type }) {
+  return <div>All the task Related to home</div>;
 }
+
+export default Home;

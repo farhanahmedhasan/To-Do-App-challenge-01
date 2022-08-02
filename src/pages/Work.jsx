@@ -1,5 +1,7 @@
 import React from "react";
 
-export function Work() {
-  return <div>Work</div>;
+function Work() {
+  return <div>Tasks related to work</div>;
 }
+
+export default Work;
